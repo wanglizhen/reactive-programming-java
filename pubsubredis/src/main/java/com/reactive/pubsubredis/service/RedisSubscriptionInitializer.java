@@ -21,6 +21,6 @@ public class RedisSubscriptionInitializer {
 	}
 	@PostConstruct
 	public void setupSubscriber() throws Exception {
-		//redisSubReactiveCommands.subscribe("channel-1","channel-1").subscribe();
+		redisSubReactiveCommands.subscribe("channel-1").subscribe();
 	}
 }

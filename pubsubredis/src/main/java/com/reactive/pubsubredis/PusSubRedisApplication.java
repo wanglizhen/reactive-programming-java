@@ -52,12 +52,13 @@ public class PusSubRedisApplication  implements CommandLineRunner{
 				e.printStackTrace();
 			}
 		}).start();
-		redisSubReactiveCommands.subscribe("channel-1").subscribe();
-		redisSubReactiveCommands.subscribe("channel-2").subscribe();
-		redisSubReactiveCommands.subscribe("channel-3").subscribe();
+		//expected error
 		new Thread(new ChennalThreadListener("channel-1", "test1")).start();
+		//expected error since not subscribed
 		new Thread(new ChennalThreadListener("channel-2", "test2")).start();
+		//expected result
 		new Thread(new ChennalThreadListener("channel-1", "test3")).start();
+		//expected result
 		new Thread(new ChennalThreadListener("channel-1", "test4")).start();
 	
 	}
@@ -75,10 +76,11 @@ public class PusSubRedisApplication  implements CommandLineRunner{
 			try {
 				LOG.info("start listening: " + chennal + ":" + message + ":timestamp:"
 						+ new Timestamp(System.currentTimeMillis()));
+				//get result or error after 10 second
 				ChannelMessage<String, String> result = redisSubReactiveCommands.observeChannels()
 						.filter(message -> this.message.equals(message.getMessage()) && this.chennal.equals(message.getChannel()))
 						.take(1).single()
-						.block(Duration.ofMillis(8000));
+						.block(Duration.ofMillis(10000));
 				LOG.info("get result: " + result.getChannel() + ":" + result.getMessage() + ":timestamp:"
 						+ new Timestamp(System.currentTimeMillis()));
 			} catch (Exception e) {
